@@ -50,6 +50,44 @@ wellness_modified %>% ggplot(aes(x = Menstruation)) +
 ```
 
 
+### Dataset "gps"
+
+```{r}
+# Get a small dataset version of gps
+g1h1p1 <- gps_raw %>% filter(GameID == 1, Half == 1, PlayerID == 2)
+
+# Remove the zero speed and calculate the average speed.
+mean((g1h1p1 %>% filter(Speed != 0.0))$Speed)
+
+# Calculate the moving distance in half 1 for player 1
+moving_dist <- mean((g1h1p1 %>% filter(Speed != 0.0))$Speed) * 60 * 8 * 45/60
+```
+
+Goal: Graph the frames about how player moved in a game. 
+
+```{r}
+# Sample game: GameID == 1
+game1_data <- gps_raw %>% 
+    filter(GameID == 1) %>%
+    select()
+```
+
+## Challenges
+
+### Challenged #1
+
+```{r}
+gps_cleaned <- gps_raw %>%
+    select(GameID, Half, PlayerID, FrameID, GameClock, Speed)
+
+wellness_joined <- wellness_raw %>% inner_join(games_raw, by = "Date") %>%
+    select(Date, Fatigue, PlayerID)
+
+wellness_joined <- wellness_joined[!duplicated(wellness_joined),]
+gps_cleaned <- gps_cleaned %>% inner_join(wellness_joined, by="")
+```
+
+
 
 
 

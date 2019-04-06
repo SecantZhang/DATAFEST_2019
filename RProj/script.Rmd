@@ -1,0 +1,179 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## Calculating the distance for each player in each game. 
+
+```{r}
+# Small subset of dataset. 
+temp_dist_df <- gps_raw %>% 
+    filter(GameID == 1, Half == 1, PlayerID == 2) %>% 
+    select(GameID, Half, PlayerID, Longitude, Latitude)
+
+measure_dist <- function(lat1, lon1, lat2, lon2) {
+    R <- 6378.137
+    dLat <- lat2 * pi / 180 - lat1 * pi / 180
+    dLon <- lon2 * pi / 180 - lon1 * pi / 180
+    a <- sin(dLat/2) * sin(dLat/2) + cos(lat1*pi/180) * cos(lat2*pi/180) * sin(dLon/2) * sin(dLon/2)
+    c <- 2 * atan2(sqrt(a), sqrt(1-a))
+    d <- R * c
+    return (d * 1000)
+}
+
+measure <- function(lon1,lat1,lon2,lat2) {
+    R <- 6378.137                                # radius of earth in Km
+    dLat <- (lat2-lat1)*pi/180
+    dLon <- (lon2-lon1)*pi/180
+    a <- sin((dLat/2))^2 + cos(lat1*pi/180)*cos(lat2*pi/180)*(sin(dLon/2))^2
+    c <- 2 * atan2(sqrt(a), sqrt(1-a))
+    d <- R * c
+    return (d * 1000)                            # distance in meters
+}
+
+temp_dist <- 0
+for (i in 1:length(temp_dist_df)) {
+    current <- temp_dist_df[i,]
+    next_ <- temp_dist_df[i+1,]
+    current_dist <- measure(current$Latitude, current$Longitude, next_$Latitude, next_$Longitude)
+    temp_dist = temp_dist + current_dist
+}
+
+temp_dist
+```
+
+```{r}
+temp_dist_df <- temp_dist_df[!duplicated(c(temp_dist_df$Longitude, temp_dist_df$Latitude)),]
+
+```
+
+
+## Measuring Performance
+
+### Speed
+
+```{r}
+measure_speed <- gps_raw %>% group_by(GameID, Half, PlayerID) %>%
+    filter(Speed != 0) %>%
+    summarise(avg_speed = mean(Speed))
+
+measure_speed2 <- measure_speed %>% group_by(GameID, Half) %>% 
+    summarise(avg_speed_half = mean(avg_speed), sd_speed = sd(avg_speed))
+    
+
+measure_speed3 <- measure_speed %>%
+    inner_join(measure_speed2, by=c("GameID"="GameID", "Half"="Half")) %>%
+    mutate(speed_std = (avg_speed - avg_speed_half) / sd_speed) %>%
+    select(GameID, Half, PlayerID, speed_std)
+
+measure_speed3 %>% head(5)
+```
+
+### AccelImpulse
+
+```{r}
+measure_accel_load <- gps_raw %>% group_by(GameID, Half, PlayerID) %>%
+    filter(AccelLoad != 0) %>%
+    summarise(avg_load = mean(AccelLoad))
+
+measure_accel_load2 <- measure_accel_load %>% 
+    group_by(GameID, Half) %>% 
+    summarise(avg_load_half = mean(avg_load), sd_load_half = sd(avg_load))
+    
+measure_accel_load3 <- measure_accel_load %>% 
+    inner_join(measure_accel_load2, by=c("GameID"="GameID", "Half"="Half")) %>%
+    mutate(accel_load_std = (avg_load - avg_load_half) / sd_load_half) %>%
+    select(GameID, Half, PlayerID, accel_load_std)
+
+measure_accel_load3 %>% head(5)
+```
+
+
+### Distance
+
+```{r}
+library(pracma)
+
+measure_dist <- gps_raw %>% group_by(GameID, Half, PlayerID) %>% 
+    mutate(GameClock = as.double(GameClock)) %>%
+    summarize(dist = trapz(GameClock, Speed))
+
+measure_dist2 <- measure_dist %>% group_by(GameID, Half) %>%
+    summarize(avg_dist = mean(dist), sd_dist = sd(dist))
+
+# Calculate the standizered moving distance
+measure_dist3 <- measure_dist %>%
+    inner_join(measure_dist2, by=c("GameID" = "GameID", "Half" = "Half")) %>% 
+    mutate(dist_std = (dist - avg_dist) / sd_dist) %>%
+    select(GameID, Half, PlayerID, dist_std)
+```
+
+
+### Acceleration
+
+```{r}
+measure_accel_imp <- gps_raw %>% group_by(GameID, Half, PlayerID) %>%
+    filter(AccelImpulse != 0) %>%
+    summarise(avg_acc = mean(AccelImpulse))
+
+measure_accel_imp2 <- measure_accel_imp %>% 
+    group_by(GameID, Half) %>%
+    summarize(avg_acc_half = mean(avg_acc), sd_acc = sd(avg_acc))
+
+measure_accel_imp3 <- measure_accel_imp %>%
+    inner_join(measure_accel_imp2, by=c("GameID" = "GameID", "Half" = "Half")) %>%
+    mutate(acc_std = (avg_acc - avg_acc_half) / sd_acc) %>%
+    select(GameID, Half, PlayerID, acc_std)
+```
+
+
+### Integration
+
+```{r}
+flight <- read.csv("dataset/flight2.csv", header=FALSE)[-1,-1]
+colnames(flight) <- c("Tournament", "From", "To", "Hours", "GameID")
+flight <- flight %>% mutate(GameID = as.integer(GameID))
+
+# Using average as matrix element
+int_perf_avg <- measure_speed3 %>%
+    inner_join(measure_accel_imp3, by = c("GameID" = "GameID", "Half" = "Half", "PlayerID" = "PlayerID")) %>%
+    inner_join(measure_accel_load3, by = c("GameID" = "GameID", "Half" = "Half", "PlayerID" = "PlayerID")) %>%
+    inner_join(measure_dist3, by = c("GameID" = "GameID", "Half" = "Half", "PlayerID" = "PlayerID")) %>%
+    inner_join(flight, by = c("GameID" = "GameID"))
+
+performance_score <- int_perf_avg %>%
+    mutate(perf_score = speed_std + acc_std + accel_load_std + dist_std)
+
+summary(performance_score$perf_score)
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
