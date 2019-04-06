@@ -1,11 +1,15 @@
 ---
-title: "R Notebook"
+title: "Explorary Data Analysis"
+author: "Team Model Overfit"
 output: html_notebook
 ---
 
-# Penn State DataFest 2019 Team "Model Overfit"
-
 # Exploratory Data Analysis
+
+```{r}
+library(tidyverse)
+```
+
 
 ## Prepare the Dataset
 
@@ -15,4 +19,83 @@ gps_raw <- read.csv("dataset/gps.csv", header=TRUE)
 rpe_raw <- read.csv("dataset/rpe.csv", header=TRUE)
 wellness_raw <- read.csv("dataset/wellness.csv", header=TRUE)
 ```
+
+## Glimpse of the Dataset
+
+```{r}
+str(games_raw)
+str(gps_raw)
+str(rpe_raw)
+str(wellness_raw)
+```
+
+## Pre-processing the Data. 
+
+### Dataset "wellness"
+
+```{r}
+wellness_modified <- wellness_raw %>%
+    select(-Nutrition, -NutritionAdjustment)
+```
+
+```{r}
+# Boxplot of Fatigue and Menstruation
+wellness_modified %>% ggplot(aes(x = Menstruation)) +
+    geom_boxplot(aes(y = Fatigue))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
