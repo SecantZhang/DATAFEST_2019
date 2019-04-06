@@ -178,6 +178,8 @@ $(document).ready(function () {
 
 
 <!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-text-begin -->
 <div id="exploratory-data-analysis" class="section level1">
 <h1>Exploratory Data Analysis</h1>
 <!-- rnb-text-end -->
@@ -304,6 +306,14 @@ wellness_raw &lt;- read.csv(&quot;dataset/wellness.csv&quot;, header=TRUE)</code
 <h3>Dataset “wellness”</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2VsbG5lc3NfbW9kaWZpZWQgPC0gd2VsbG5lc3NfcmF3ICU+JVxuICAgIHNlbGVjdCgtTnV0cml0aW9uLCAtTnV0cml0aW9uQWRqdXN0bWVudCwgLUJhZFRpbWUsIC1XYWtlVGltZSlcblxuYGBgIn0= -->
+<pre class="r"><code>wellness_modified &lt;- wellness_raw %&gt;%
+    select(-Nutrition, -NutritionAdjustment, -BadTime, -WakeTime)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gaXNfY2hhcmFjdGVyKHgpIDogb2JqZWN0ICdCYWRUaW1lJyBub3QgZm91bmRcbiJ9 -->
+<pre><code>Error in is_character(x) : object 'BadTime' not found</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -318,7 +328,7 @@ wellness_raw &lt;- read.csv(&quot;dataset/wellness.csv&quot;, header=TRUE)</code
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhwbG9yYXJ5IERhdGEgQW5hbHlzaXMiCmF1dGhvcjogIlRlYW0gTW9kZWwgT3ZlcmZpdCIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIyBFeHBsb3JhdG9yeSBEYXRhIEFuYWx5c2lzCgpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmBgYAoKCiMjIFByZXBhcmUgdGhlIERhdGFzZXQKCmBgYHtyfQpnYW1lc19yYXcgPC0gcmVhZC5jc3YoImRhdGFzZXQvZ2FtZXMuY3N2IiwgaGVhZGVyPVRSVUUpCmdwc19yYXcgPC0gcmVhZC5jc3YoImRhdGFzZXQvZ3BzLmNzdiIsIGhlYWRlcj1UUlVFKQpycGVfcmF3IDwtIHJlYWQuY3N2KCJkYXRhc2V0L3JwZS5jc3YiLCBoZWFkZXI9VFJVRSkKd2VsbG5lc3NfcmF3IDwtIHJlYWQuY3N2KCJkYXRhc2V0L3dlbGxuZXNzLmNzdiIsIGhlYWRlcj1UUlVFKQpgYGAKCiMjIEdsaW1wc2Ugb2YgdGhlIERhdGFzZXQKCmBgYHtyfQpzdHIoZ2FtZXNfcmF3KQpzdHIoZ3BzX3JhdykKc3RyKHJwZV9yYXcpCnN0cih3ZWxsbmVzc19yYXcpCmBgYAoKIyMgUHJlLXByb2Nlc3NpbmcgdGhlIERhdGEuIAoKIyMjIERhdGFzZXQgIndlbGxuZXNzIgoKYGBge3J9CndlbGxuZXNzX21vZGlmaWVkIDwtIHdlbGxuZXNzX3JhdyAlPiUKICAgIHNlbGVjdCgtTnV0cml0aW9uLCAtTnV0cml0aW9uQWRqdXN0bWVudCkKYGBgCgpgYGB7cn0KIyBCb3hwbG90IG9mIEZhdGlndWUgYW5kIE1lbnN0cnVhdGlvbgp3ZWxsbmVzc19tb2RpZmllZCAlPiUgZ2dwbG90KGFlcyh4ID0gTWVuc3RydWF0aW9uKSkgKwogICAgZ2VvbV9ib3hwbG90KGFlcyh5ID0gRmF0aWd1ZSkpCmBgYAoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhwbG9yYXJ5IERhdGEgQW5hbHlzaXMiCmF1dGhvcjogIlRlYW0gTW9kZWwgT3ZlcmZpdCIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9CmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKYGBgCgoKIyBFeHBsb3JhdG9yeSBEYXRhIEFuYWx5c2lzCgpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmBgYAoKCiMjIFByZXBhcmUgdGhlIERhdGFzZXQKCmBgYHtyfQpnYW1lc19yYXcgPC0gcmVhZC5jc3YoImRhdGFzZXQvZ2FtZXMuY3N2IiwgaGVhZGVyPVRSVUUpCmdwc19yYXcgPC0gcmVhZC5jc3YoImRhdGFzZXQvZ3BzLmNzdiIsIGhlYWRlcj1UUlVFKQpycGVfcmF3IDwtIHJlYWQuY3N2KCJkYXRhc2V0L3JwZS5jc3YiLCBoZWFkZXI9VFJVRSkKd2VsbG5lc3NfcmF3IDwtIHJlYWQuY3N2KCJkYXRhc2V0L3dlbGxuZXNzLmNzdiIsIGhlYWRlcj1UUlVFKQpgYGAKCiMjIEdsaW1wc2Ugb2YgdGhlIERhdGFzZXQKCmBgYHtyfQpzdHIoZ2FtZXNfcmF3KQpzdHIoZ3BzX3JhdykKc3RyKHJwZV9yYXcpCnN0cih3ZWxsbmVzc19yYXcpCmBgYAoKIyMgUHJlLXByb2Nlc3NpbmcgdGhlIERhdGEuIAoKIyMjIERhdGFzZXQgIndlbGxuZXNzIgoKYGBge3J9CndlbGxuZXNzX21vZGlmaWVkIDwtIHdlbGxuZXNzX3JhdyAlPiUKICAgIHNlbGVjdCgtTnV0cml0aW9uLCAtTnV0cml0aW9uQWRqdXN0bWVudCwgLUJlZFRpbWUsIC1XYWtlVGltZSkKYGBgCgpgYGB7cn0KIyBCb3hwbG90IG9mIEZhdGlndWUgYW5kIE1lbnN0cnVhdGlvbgp3ZWxsbmVzc19tb2RpZmllZCAlPiUgZ2dwbG90KGFlcyh4ID0gTWVuc3RydWF0aW9uKSkgKwogICAgZ2VvbV9ib3hwbG90KGFlcyh5ID0gRmF0aWd1ZSkpCmBgYAoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg==</div>
 
 
 

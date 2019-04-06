@@ -4,6 +4,11 @@ author: "Team Model Overfit"
 output: html_notebook
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
 # Exploratory Data Analysis
 
 ```{r}
@@ -35,7 +40,7 @@ str(wellness_raw)
 
 ```{r}
 wellness_modified <- wellness_raw %>%
-    select(-Nutrition, -NutritionAdjustment)
+    select(-Nutrition, -NutritionAdjustment, -BedTime, -WakeTime)
 ```
 
 ```{r}
