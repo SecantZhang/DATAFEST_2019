@@ -1,0 +1,18 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Penn State DataFest 2019 Team "Model Overfit"
+
+# Exploratory Data Analysis
+
+## Prepare the Dataset
+
+```{r}
+games_raw <- read.csv("dataset/games.csv", header=TRUE)
+gps_raw <- read.csv("dataset/gps.csv", header=TRUE)
+rpe_raw <- read.csv("dataset/rpe.csv", header=TRUE)
+wellness_raw <- read.csv("dataset/wellness.csv", header=TRUE)
+```
+
