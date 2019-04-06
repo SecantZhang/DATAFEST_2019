@@ -141,15 +141,50 @@ int_perf_avg <- measure_speed3 %>%
     inner_join(measure_dist3, by = c("GameID" = "GameID", "Half" = "Half", "PlayerID" = "PlayerID")) %>%
     inner_join(flight, by = c("GameID" = "GameID"))
 
+# Calculating the performance score and categorize them into three level according to the 
+# quantiles, 0 => low performance, 1 => normal, 2 => high performance
 performance_score <- int_perf_avg %>%
-    mutate(perf_score = speed_std + acc_std + accel_load_std + dist_std)
+    mutate(perf_score = speed_std + acc_std + accel_load_std + dist_std) %>%
+    select(-Tournament, -From, -To) %>%
+    mutate(perf_class = ifelse(perf_score <= -2.006117, 0, 
+                               ifelse(perf_score <= 1.876579, 1, 2)))
 
 summary(performance_score$perf_score)
+write.csv(performance_score, "dataset/output/performance_score.csv", quote=FALSE)
 ```
+
+
+## Measuring the Fatigue
+
+### Prepare the data. 
 
 ```{r}
+# Inner join games so that date is appended to wellness dataset. 
+wellness <- wellness_modified %>% 
+    inner_join(games_raw, by=c("Date"="Date")) %>%
+    select(GameID, Date, PlayerID, Fatigue, Soreness, Desire, Irritability, SleepHours, SleepQuality, Pain, Illness, Menstruation, USG, TrainingReadiness) %>%
+    right_join(performance_score, by=c("GameID"="GameID", "PlayerID"="PlayerID")) %>%
+    select(Date, GameID, Half, PlayerID, everything())
 
+# Output the prepared dataset. 
+# Eliminate the metadata. 
+training <- wellness %>% 
+    select(-Date, -GameID, -Half, -PlayerID, -speed_std, 
+           -acc_std, -accel_load_std, -dist_std, -Hours, -perf_score)
+write.csv(training, "dataset/output/training.csv", quote=FALSE, row.names = FALSE)
 ```
+
+## Naive Model Fitting
+
+### Linear Regression
+
+```{r}
+linear_regression_data <- training %>% select(-perf_class, TrainingReadiness)
+linear_regression_model <- lm(perf_score ~ ., data = linear_regression_data)
+summary(linear_regression_model)
+```
+
+
 
 
 
