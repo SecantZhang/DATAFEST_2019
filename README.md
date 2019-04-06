@@ -6,7 +6,16 @@ Took out some data from the wellness.csv
 Decided that Menstruation doesn't correlate with Fatigue
 
 2. player performance
+Use gsp to measure:
+- distance player
+- acceleration
 
+gps: heatmap for acceleration
+Goal: use the points to predict tackle
+longitude and latitude to draw the playground for players
+project the long and lat onto the playground to enlarge the effect of tackle
+
++ use win/lose, difference between scores to measure performance in game.csv
 
 3. wellness
 
@@ -16,10 +25,7 @@ Distance -> Tournament location: the further away the location is, the player mi
 
 USG: reflects how much exercise the day before
 
+4. Measure of training load
 
-gps: heatmap for acceleration
-Goal: use the points to predict tackle
-longitude and latitude to draw the playground for players
-project the long and lat onto the playground to enlarge the effect of tackle
-
+RPE.csv
 
