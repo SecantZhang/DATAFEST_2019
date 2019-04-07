@@ -87,8 +87,72 @@ wellness_joined <- wellness_joined[!duplicated(wellness_joined),]
 gps_cleaned <- gps_cleaned %>% inner_join(wellness_joined, by="")
 ```
 
+### Challenge #3
+
+```{r}
+# prepare the dataset. 
+chag3 <- gps_raw %>% filter(GameID == 11, PlayerID == 12) %>%
+    select(AccelX, AccelY) %>%
+    head(300)
+
+library(tweenr)
+
+gapminder_edit <- gapminder %>%
+  arrange(country, year) %>%
+  select(gdpPercap,lifeExp,year,country, continent, pop) %>%
+  rename(x=gdpPercap,y=lifeExp,time=year,id=country) %>%
+  mutate(ease="linear")
+
+gapminder_tween <- tween_elements(gapminder_edit,
+                                  "time", "id", "ease", nframes = 300) %>%
+  mutate(year = round(time), country = .group) %>%
+  left_join(gapminder, by=c("country","year","continent")) %>%
+  rename(population = pop.x)
+
+chag3_tween <- tween_elements(data=chag3, time="time", ease="ease", group="id",nframes = 300)
+gganimate()
+
+p2 <- ggplot(gapminder_tween,
+             aes(x=x, y=y, frame = .frame)) +
+  geom_point(aes(size=population, color=continent),alpha=0.8) +
+  xlab("GDP per capita") +
+  ylab("Life expectancy at birth") +
+  scale_x_log10(labels=comma)
+
+gganimate(p2, filename="gapminder-tween.gif", title_frame = FALSE, interval = 0.05)
+```
 
 
+```{r}
+library(gganimate)
+
+chag3 <- gps_raw %>% filter(GameID == 11, PlayerID == 12) %>%
+    select(AccelX, AccelY) %>%
+    head(300)
+
+chag3 <- cbind(chag3, time=1:300)
+
+
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+
+frame <- chag3 %>% ggplot(aes(x = AccelX, y = AccelY, color = "red")) +
+    geom_point() +
+    transition_time(time)
+
+animate(frame, nframes=300, fps=1)
+
+chag3[3,] %>% ggplot(aes(x = AccelX, y = AccelY, color = "red")) +
+    geom_point()
+```
 
 
 
