@@ -146,7 +146,9 @@ ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
 
 frame <- chag3 %>% ggplot(aes(x = AccelX, y = AccelY, color = "red")) +
     geom_point() +
-    transition_time(time)
+    labs(title = 'Frame time: {frame_time}', x = 'X Acceleration', y = 'Y Acceleration') +
+    transition_time(time) +
+    ease_aes('linear')
 
 animate(frame, nframes=300, fps=1)
 

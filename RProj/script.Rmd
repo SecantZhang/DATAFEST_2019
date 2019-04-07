@@ -153,6 +153,16 @@ summary(performance_score$perf_score)
 write.csv(performance_score, "dataset/output/performance_score.csv", quote=FALSE)
 ```
 
+### 
+
+```{r}
+temp_score <- performance_score %>% inner_join(games_raw, by=c("GameID"="GameID"))
+
+temp_score %>% ggplot(aes(x = Outcome)) +
+    geom_boxplot(aes(y = accel_load_std))
+```
+
+
 
 ## Measuring the Fatigue
 
@@ -185,6 +195,17 @@ summary(linear_regression_model)
 ```
 
 
+## Plots
+
+```{r}
+ggplot() +
+    geom_density(aes(x = Speed, alpha = 0.8, fill = "red"), data = gps_raw %>% filter(Speed != 0)) +
+    geom_density(aes(x = AccelImpulse, alpha = 0.8, fill = "blue"), data = gps_raw %>% filter(AccelImpulse != 0)) +
+    geom_density(aes(x = AccelLoad, alpha = 0.8, fill = "green"), data = gps_raw %>% filter(AccelLoad != 0, AccelLoad <= 8, AccelLoad > 0.4)) +
+    ggtitle("Density Graph of Speed, Acceleration Impulse and Acceleration Load") +
+    labs(x = "Speed (red), AccelImpulse (Blue) and AccelLoad (Green)",
+         y = "Density")
+```
 
 
 
